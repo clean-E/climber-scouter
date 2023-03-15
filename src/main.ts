@@ -7,6 +7,9 @@ async function bootstrap() {
   app.enableCors({
     origin: true,
     credentials: true,
+    allowedHeaders:
+      "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe",
+    preflightContinue: false,
   });
 
   await app.listen(3000);
