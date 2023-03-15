@@ -1,0 +1,109 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Problem {
+  grade: String!
+  count: Int!
+}
+
+type Record {
+  _id: String!
+  date: DateTime!
+  gym: String!
+  problems: [Problem!]!
+  total: Int!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Rank {
+  name: String!
+  power: Int!
+}
+
+type User {
+  _id: String!
+  name: String!
+  password: String!
+  records: [Record!]
+}
+
+input ProblemInput {
+  grade: String!
+  count: Int!
+}
+
+input RecordInput {
+  _id: String!
+  date: DateTime!
+  gym: String!
+  problems: [ProblemInput!]!
+  total: Int!
+}
+
+input RankInput {
+  name: String!
+  power: Int!
+}
+
+input UserInput {
+  _id: String!
+  name: String!
+  password: String!
+  records: [RecordInput!]
+}
+
+type Query {
+  getUser(id: String!): User!
+  getPowerRank: [Rank!]!
+  getGymGrade(gymName: String!): GymGrade!
+}
+
+type GymGrade {
+  lv0: String!
+  lv1: String!
+  lv2: String!
+  lv3: String!
+  lv4: String!
+  lv5: String!
+  lv6: String!
+  lv7: String!
+  lv8: String!
+  lv9: String!
+  lv10: String!
+  lv11: String!
+  lv12: String!
+  lv13: String!
+  lv14: String!
+  lv15: String!
+}
+
+type Mutation {
+  createUser(name: String!, password: String!): User!
+  createRecord(record: CreateRecordInput!): User!
+  editRecord(record: EditRecordInput!): User!
+  deleteRecord(
+    """기록 id"""
+    id: String!
+    name: String!
+    password: String!
+  ): User!
+}
+
+input CreateRecordInput {
+  name: String!
+  gym: String!
+  problems: [ProblemInput!]!
+}
+
+input EditRecordInput {
+  id: String!
+  name: String!
+  password: String!
+  gym: String!
+  problems: [ProblemInput!]!
+}
