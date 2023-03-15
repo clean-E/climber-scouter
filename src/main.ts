@@ -8,7 +8,7 @@ async function bootstrap() {
     origin: true,
     credentials: true,
     allowedHeaders:
-      "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe",
+      "Content-Type,Accept,Authorization,Access-Control-Allow-Origin",
     preflightContinue: false,
   });
 
