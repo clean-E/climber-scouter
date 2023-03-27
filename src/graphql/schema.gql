@@ -83,7 +83,7 @@ type GymGrade {
 }
 
 type Mutation {
-  createUser(name: String!, password: String!): User!
+  createUser(name: String!, password: String!): Rank!
   createRecord(record: CreateRecordInput!): User!
   editRecord(record: EditRecordInput!): User!
   deleteRecord(

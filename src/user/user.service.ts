@@ -1,17 +1,17 @@
-import { Injectable } from '@nestjs/common';
-import { InjectConnection, InjectModel } from '@nestjs/mongoose';
-import { GraphQLError } from 'graphql';
-import * as mongoose from 'mongoose';
-import { Model } from 'mongoose';
-import { gymGrade, score } from 'src/data/data';
+import { Injectable } from "@nestjs/common";
+import { InjectConnection, InjectModel } from "@nestjs/mongoose";
+import { GraphQLError } from "graphql";
+import * as mongoose from "mongoose";
+import { Model } from "mongoose";
+import { gymGrade, score } from "src/data/data";
 import {
   GymGrage,
   Problem,
   Record,
   RecordDocument,
-} from 'src/schemas/record.schema';
-import { Rank, User, UserDocument } from 'src/schemas/user.schema';
-import * as bcrypt from 'bcrypt';
+} from "src/schemas/record.schema";
+import { Rank, User, UserDocument } from "src/schemas/user.schema";
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class UserService {
@@ -20,23 +20,23 @@ export class UserService {
     private readonly userModel: Model<UserDocument>,
     @InjectModel(Record.name)
     private readonly recordModel: Model<RecordDocument>,
-    @InjectConnection() private readonly connection: mongoose.Connection,
+    @InjectConnection() private readonly connection: mongoose.Connection
   ) {}
 
   async getUser(id: string): Promise<User> {
     const user = await this.userModel.findById(id);
     if (user) {
-      await user.populate(['records', 'records.problems']);
+      await user.populate(["records", "records.problems"]);
       return user;
     } else {
-      throw new GraphQLError('User Not Found');
+      throw new GraphQLError("User Not Found");
     }
   }
 
   async getPowerRank(): Promise<Rank[]> {
     const users = await this.userModel
       .find()
-      .populate(['records', 'records.problems']);
+      .populate(["records", "records.problems"]);
 
     const rank = users.map((user) => {
       let power = 0;
@@ -56,18 +56,17 @@ export class UserService {
     return rank;
   }
 
-  async createUser(name: string, password: string): Promise<User> {
+  async createUser(name: string, password: string): Promise<Rank> {
     const user = await this.userModel.findOne({ name });
     const salt = await bcrypt.genSalt();
     password = await bcrypt.hash(password, salt);
 
     if (user) {
       // already exist
-      throw new GraphQLError('Already Exist Name');
+      throw new GraphQLError("Already Exist Name");
     } else {
       const newUser = await this.userModel.create({ name, password });
-      await newUser.populate(['records', 'records.problems']);
-      return newUser;
+      return { name: newUser.name, power: 0 };
     }
   }
 
@@ -78,7 +77,7 @@ export class UserService {
   async createRecord(
     name: string,
     gym: string,
-    problems: Problem[],
+    problems: Problem[]
   ): Promise<User> {
     let total = 0;
     for (let i = 0; i < problems.length; i++) {
@@ -96,11 +95,11 @@ export class UserService {
       { name },
       {
         $push: { records: newRecord._id },
-      },
+      }
     );
     const user = await this.userModel
       .findOne({ name })
-      .populate(['records', 'records.problems']);
+      .populate(["records", "records.problems"]);
 
     return user;
   }
@@ -110,7 +109,7 @@ export class UserService {
     name: string,
     password: string,
     gym: string,
-    problems: Problem[],
+    problems: Problem[]
   ): Promise<User> {
     const user = await this.userModel.findOne({ name });
 
@@ -129,18 +128,18 @@ export class UserService {
 
       const user = await this.userModel
         .findOne({ name })
-        .populate(['records', 'records.problems']);
+        .populate(["records", "records.problems"]);
 
       return user;
     } else {
-      throw new GraphQLError('Wrong Password');
+      throw new GraphQLError("Wrong Password");
     }
   }
 
   async deleteRecord(
     id: string,
     name: string,
-    password: string,
+    password: string
   ): Promise<User> {
     const user = await this.userModel.findOne({ name });
 
@@ -152,12 +151,12 @@ export class UserService {
         { name },
         {
           $pull: { records: id },
-        },
+        }
       );
-      await user.populate(['records', 'records.problems']);
+      await user.populate(["records", "records.problems"]);
       return user;
     } else {
-      throw new GraphQLError('Wrong Password');
+      throw new GraphQLError("Wrong Password");
     }
   }
 }
