@@ -47,6 +47,7 @@ export class UserService {
             .reduce((a, b) => a + b, 0) / user.records.length;
       }
       return {
+        _id: user.id,
         name: user.name,
         power: parseInt(power.toFixed()),
       };
@@ -66,7 +67,7 @@ export class UserService {
       throw new GraphQLError("Already Exist Name");
     } else {
       const newUser = await this.userModel.create({ name, password });
-      return { name: newUser.name, power: 0 };
+      return { _id: newUser.id, name: newUser.name, power: 0 };
     }
   }
 
